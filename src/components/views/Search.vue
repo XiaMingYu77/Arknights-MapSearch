@@ -98,15 +98,10 @@
                         padding: 6px 15px;
                         border-radius: 20px;
                         background-color: #FFDC01;
-                        outline: 0;
-                        border: 0;
-                        cursor: pointer;
+                        outline: none;
+                        border: none;
                         overflow: hidden;
                         transition: background-color .25s;
-                    }
-
-                    .search-btn:hover {
-                        background-color: #FFDC01;
                     }
 
                     .search-btn::after {
@@ -127,6 +122,7 @@
                         opacity: .5;
                         transition: 0s;
                     }
+
                 }
             }
 
