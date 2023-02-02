@@ -1,0 +1,23 @@
+{
+    "name": "生息演算地图查询",
+    "short_name": "地图查询",
+    "start_url": "/index.html",
+    "theme_color": "#3E3A39",
+    "background_color": "#3E3A39",
+    "description":"",
+    "orientation":"any",
+    "scope":"/",
+    "display": "standalone",
+    "icons": [
+        {
+            "src": "/icon180x180.png",
+            "type": "image/png",
+            "sizes": "180x180"
+        },
+        {
+            "src": "/icon512x512.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ]
+}
