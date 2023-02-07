@@ -10,7 +10,7 @@
 
                 <div :class="searchArea">
                     <div class="search">
-                        <input type="text" v-model="searchKey" />
+                        <input type="text" v-model="searchKey" @keydown.enter="search" @input="search"/>
                         <button class="search-btn" @click="search">搜索</button>
                     </div>
                 </div>
@@ -57,10 +57,10 @@
             // background-color: gray;
             width: 100%;
             border-radius: 20px 20px 0 0;
-            padding: 60px 20px 0 20px;  //padding-top多留40px给搜索栏让位置
+            padding: 60px 20px 0 20px; //padding-top多留40px给搜索栏让位置
             background-image: linear-gradient(to bottom right, rgba(105, 122, 161) 40%, rgba(231, 182, 193) 100%);
             position: relative; //search-area 为absolute就会跟着跑，为fixed就会驻留
-            
+
 
             .search-area {
                 z-index: 100;
@@ -126,7 +126,7 @@
                 }
             }
 
-            .search-area-stay{
+            .search-area-stay {
                 .search-area();
                 position: fixed;
             }
@@ -151,10 +151,10 @@
 </style>
 
 <script lang="ts" setup>
-import { isFunction } from '@vue/shared';
 import { ref, watch, nextTick } from 'vue';
 import ShowMap from './ShowMap.vue'
 import { useStore } from 'vuex'
+import { pinyin } from 'pinyin-pro';
 
 let store = useStore();
 let showMap = ref(false);
@@ -180,13 +180,12 @@ let scroll = (() => {
             ticked = true;
             window.requestAnimationFrame(() => {
                 let top = getTop(topElement.value);
-                console.log(top);
                 if (top > 0) {
-                    if(searchArea.value!='search-area'){
+                    if (searchArea.value != 'search-area') {
                         searchArea.value = 'search-area'
                     }
                 } else {
-                    if(searchArea.value!='search-area-stay'){
+                    if (searchArea.value != 'search-area-stay') {
                         searchArea.value = 'search-area-stay'
                     }
                 }
@@ -199,28 +198,43 @@ let scroll = (() => {
 
 let hint = ref('不要输入符号 \n 可以仅输入部分文字');
 
-//搜索
-function search() {
-    reset(); //要重置前面的参数
-    let list = searchMap(searchKey.value);
-    if (list.length != 0) {
-        mapList.value = list;
-        showMap.value = true;
-    } else {
-        mapList.value = [];
-        showMap.value = false;
-        hint.value = '搜索失败，看看是不是打错了\n不要输入符号\n可以仅输入部分文字';
-    }
-}
-function reset() {
 
-}
+//搜索
+//增加防抖操作
+const search = (() => {
+    let timer: any = null;
+
+    return function () {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            let list = searchMap(searchKey.value);
+            if (list.length != 0) {
+                mapList.value = list;
+                showMap.value = true;
+            } else {
+                mapList.value = [];
+                showMap.value = false;
+                hint.value = '搜索失败，看看是不是打错了\n不要输入符号\n可以仅输入部分文字';
+            }
+        }, 300);
+    }
+})();
+
+
+// 获取带拼音的数组
+const searchList = store.state.mapList.map((item: string) => {
+    // 获取数组形式不带声调的拼音 pinyin('汉语拼音', {toneType: 'none', type: 'array'}); // ["han", "yu", "pin", "yin"]
+    const tail = pinyin(item, { toneType: 'none', type: 'array' }).reduce((a, b) => a + b[0], '')
+    return item + tail
+})
 
 function searchMap(key: string) {
     //返回一个列表
-    let ans: any = [];
-    store.state.mapList.forEach((value: string) => {
-        if (key != '' && value.indexOf(key) != -1) ans.push(value);
+    const ans: any = [];
+    searchList.forEach((value: string, index: number) => {
+        if (key != '' && value.indexOf(key) != -1) {
+            ans.push(store.state.mapList[index]);
+        }
     });
     return ans;
 }
