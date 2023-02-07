@@ -2673,6 +2673,11 @@
   "resolved" "https://registry.npmmirror.com/pify/-/pify-4.0.1.tgz"
   "version" "4.0.1"
 
+"pinyin-pro@^3.13.0":
+  "integrity" "sha512-mwXkm0fbNdyBqWMCkpmPDT3by8nAIROpQBtJPd2zCQtYn/ED2KWe42X7gZ96R7jZz8zPzaWk5yq93BnOOucNNw=="
+  "resolved" "https://registry.npmmirror.com/pinyin-pro/-/pinyin-pro-3.13.0.tgz"
+  "version" "3.13.0"
+
 "postcss-pxtorem@5.1.1":
   "integrity" "sha512-uvgIujL/pn0GbZ+rczESD2orHsbXrrCqi+q9wJO8PCk3ZGCoVVtu5hZTbtk+tbZHZP5UkTfCvqOrTZs9Ncqfsg=="
   "resolved" "https://registry.npmmirror.com/postcss-pxtorem/-/postcss-pxtorem-5.1.1.tgz"
