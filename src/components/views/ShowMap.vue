@@ -1,6 +1,6 @@
 <template>
     <div class="content-map">
-        <img :src="`/maps/${name}.jpg`" class="map" v-for="(name, index) in mapList" :key="name"/>
+        <Map :src="`/maps/${name}.jpg`" class="map" v-for="(name, index) in mapList" :key="name"></Map>
     </div>
 </template>
 
@@ -8,16 +8,14 @@
 .content-map {
     
     .map {
-        margin: 30px 0;
         width: 100%;
-        object-fit: contain;
-        border-radius: 20px;
     }
 }
 </style>
 
 <script setup lang="ts">
 import { toRefs, ref, onMounted } from 'vue';
+import Map from './content/Map.vue';
 
 let props = defineProps(['mapList']);
 

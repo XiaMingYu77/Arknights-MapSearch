@@ -1,5 +1,6 @@
 <template>
     <div class="content">
+        <div class="black-background"></div>
         <img src="/backicon.png" class="headImg" />
 
         <div class="scrollArea" @scroll="scroll">
@@ -25,6 +26,7 @@
 </template>
 
 <style lang="less" scoped>
+
 .content {
     height: 100vh;
     width: 100%;
@@ -63,7 +65,7 @@
 
 
             .search-area {
-                z-index: 100;
+                z-index: 10;
 
                 position: absolute;
                 top: 20px;
