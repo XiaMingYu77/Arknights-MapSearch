@@ -15,23 +15,27 @@
 
 <style lang="less" scoped>
 .mapSearch {
-    padding: 0 20px;
 
     .search-area-stay {
         .search-area();
         position: fixed;
-        top: 15px;
+        top: 45px;
+        left: 0;
+        right: 0;
     }
 
     .search-area {
-        z-index: 10;
+        padding: 10px 20px;
+        background-color: #687AA0;
 
         position: absolute;
-        top: 55px;
+        top: 45px;
         left: 0;
         right: 0;
-        padding: 0 20px 0 20px;
 
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
         .search {
             // width: 100%;
 
@@ -88,7 +92,8 @@
     }
 
     .maplist {
-        margin-top: 58px;
+        margin-top: 65px;
+        padding: 0 20px;
     }
 
     .empty {

@@ -8,12 +8,12 @@
             <div class="serch-place" @touchstart="touchstart" @touchmove="touchmove">
                 <div ref="topElement"></div>
 
-                <van-tabs v-model:active="active" background="#0000003e" title-active-color="#fff"
-                    title-inactive-color="#9c9c9c">
+                <van-tabs v-model:active="active" background="#4F5C7A" title-active-color="#fff"
+                    title-inactive-color="#9c9c9c" sticky>
                     <van-tab title="地图">
                         <MapSearch :searchAreaClass="searchArea" :imgStateTag="imgStateTag"></MapSearch>
                     </van-tab>
-                    <van-tab title="食物">
+                    <van-tab title="食谱">
                         <FoodSearch :imgStateTag="imgStateTag"></FoodSearch>
                     </van-tab>
                 </van-tabs>
@@ -55,20 +55,23 @@
 
         .serch-place {
             flex: 1;
-            // background-color: gray;
             width: 100%;
             border-radius: 20px 20px 0 0;
-            background-image: linear-gradient(to bottom right, rgba(105, 122, 161) 40%, rgba(231, 182, 193) 100%);
+            background-image: linear-gradient(to bottom right, rgba(105, 122, 161) 30%, rgba(231, 182, 193) 100%);
             position: relative; //search-area 为absolute就会跟着跑，为fixed就会驻留
+
+            :deep(.van-tabs__wrap) {
+                padding: 0;
+                border-radius: 20px 20px 0 0;
+                transition: border-radius ease-in 100ms;
+                z-index: 15;
+                height: 45px;
+            }
+            :deep(.van-sticky--fixed .van-tabs__wrap){
+                border-radius: 0;
+            }
         }
     }
-}
-
-:deep(.van-tabs__wrap) {
-    padding: 0;
-    border-radius: 20px 20px 20px 20px;
-    z-index: 10;
-    height: 45px;
 }
 </style>
 
@@ -100,7 +103,7 @@ let scroll = (() => {
             ticked = true;
             window.requestAnimationFrame(() => {
                 let top = getTop(topElement.value);
-                if (top > -40) {
+                if (top > 0) {
                     if (searchArea.value != 'search-area') {
                         searchArea.value = 'search-area'
                     }
@@ -130,7 +133,7 @@ let touchmove = (event: any) => {
         window.requestAnimationFrame(() => {
             let currentX = event.touches[0].screenX;
             let changed = currentX - startX;
-            if (Math.abs(changed) > 80) { //变化较大考虑换页
+            if (Math.abs(changed) > 50) { //变化较大考虑换页
                 if (changed < 0 && active.value < PageInfo.max) active.value++; //往左拉
                 if (changed > 0 && active.value > PageInfo.min) active.value--; //往右拉
             }

@@ -1,5 +1,6 @@
 <template>
-    <div :class="contentClass" class="content" @click="changeShow">
+    <div :class="contentClass" class="content" @click.stop="changeShow" ref="area">
+        <div class="background"></div>
         <img :src="src" class="map" />
         <div class="linkArea">
             <a :href="`https://search.bilibili.com/all?keyword=${name}`" target="_blank" class="link"
@@ -12,15 +13,24 @@
 .content {
     transition: all ease-in-out 200ms;
 
-    .link{
+    .map {
+        width: 100%;
+        object-fit: contain;
+    }
+
+    .link {
         font-size: 16px;
     }
 }
 
 .content-mini {
     width: 100%;
-    margin: 30px 0;
-    background-color: #00000000;
+    margin-bottom: 20px;
+    background-color: rgba(0, 0, 0, 0);
+
+    .map {
+        border-radius: 15px;
+    }
 
     .link {
         color: #1e497e;
@@ -36,30 +46,40 @@
     bottom: 0;
     margin: 0;
 
-    background-color: #000000aa;
     padding: 10px;
+    border-radius: 0;
 
     display: flex;
     flex-direction: column;
     justify-content: center;
 
+    .background{
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #000;
+        opacity: 0.65;
+        z-index: -1;
+    }
+    .map {
+        z-index: 5;
+        border-radius: 15px;
+    }
 
-    .linkArea{
-        display: block;
+    .linkArea {
+        display: none;
         width: 100%;
         margin-top: 10px;
         text-align: center;
-        
-        .link{
-            color: #f5f5f5;;
+
+        .link {
+            color: #f5f5f5;
+            ;
         }
     }
-}
-
-.map {
-    width: 100%;
-    object-fit: contain;
-    border-radius: 15px;
 }
 </style>
 
@@ -69,11 +89,19 @@ import { ref, toRefs, watch } from 'vue';
 let props = defineProps(['src', 'name', 'imgStateTag']);
 let newProps = toRefs(props);
 let tag: any = newProps.imgStateTag;
+let area: any = ref();
 
 let contentClass = ref('content-mini');
 function changeShow() {
-    if (contentClass.value == 'content-mini') contentClass.value = 'content-large';
-    else contentClass.value = 'content-mini';
+    if (contentClass.value == 'content-mini') {
+        contentClass.value = 'content-large';
+        //放大时需要禁用touchmove的冒泡
+        area.value.addEventListener('touchmove', eventPreventDefault);
+    }
+    else {
+        contentClass.value = 'content-mini';
+        area.value.removeEventListener('touchmove', eventPreventDefault);
+    }
 }
 
 function closePic() {
@@ -83,5 +111,10 @@ function closePic() {
 watch(tag, () => {
     closePic();
 })
+
+
+function eventPreventDefault(event: any) {
+    event.stopPropagation()
+}
 
 </script>

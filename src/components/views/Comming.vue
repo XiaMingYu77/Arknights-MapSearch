@@ -47,7 +47,7 @@
         height: 40px;
         font-size: 20px;
         color: #f5f5f5;
-        background-image: linear-gradient(to bottom right, rgba(105, 122, 161) 40%, rgba(231, 182, 193) 100%);
+        background-image: linear-gradient(to bottom right, rgba(105, 122, 161) 60%, rgba(231, 182, 193) 100%);
         box-shadow: 2px 3px 4px rgba(0, 0, 0, 0.368);
         transition: all ease-in-out 200ms;
     }
@@ -60,10 +60,10 @@
 
 .authorMsg {
     position: fixed;
-    right: 10px;
+    right: 20px;
     bottom: 10px;
     margin: auto;
-    font-size: 10px;
+    font-size: 12px;
 }
 </style>
 
