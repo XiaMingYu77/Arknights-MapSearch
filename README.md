@@ -4,7 +4,15 @@
 
 由于服务器是学生版的所以流量承载力不够大，欢迎大佬 fork 该项目进行再部署
 
-注意！本项目尚且仅对移动端进行了适配哦，pc端想使用的话请用F12开启手机模拟模式
+推荐使用手机端，由于现在是做两套页面，pc暂时性使用，所以手机端功能会相对更齐全
+
+手机端地址：http://mapsearch.moming.asia
+
+电脑端地址：http://mapsearch.pc.moming.asia
+
+
+
+可以在电脑端按 F12 点击控制台左上角的切换设备仿真来模拟手机使用
 
 ![Screenshot_20230202_151136_com.microsoft.emmx](https://gcore.jsdelivr.net/gh/XiaMingYu77/My-Markdown-Picture/img/202302021514447.jpg)
 
