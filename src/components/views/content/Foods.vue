@@ -71,6 +71,10 @@ function changeShow() {
     else {
         contentClass.value = 'content-mini';
         area.value.removeEventListener('touchmove', eventPreventDefault);
+        //由于它太长了，取出后再放回去滚动位置发生明显变化
+        setTimeout(()=>{ //滚回来，但是要等渲染
+            area.value.scrollIntoView(false);
+        }, 0);
     }
 }
 

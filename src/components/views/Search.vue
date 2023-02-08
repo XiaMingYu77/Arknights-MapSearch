@@ -67,7 +67,8 @@
                 z-index: 15;
                 height: 45px;
             }
-            :deep(.van-sticky--fixed .van-tabs__wrap){
+
+            :deep(.van-sticky--fixed .van-tabs__wrap) {
                 border-radius: 0;
             }
         }
@@ -121,9 +122,11 @@ let scroll = (() => {
 //由于transform导致fixed失效，需要手动进行页面切换（vant的滑动要用transform）
 let change = false;
 let startX = 0;
+let startY = 0; //这个是为了判断是不是用户在上下滑动
 function touchstart(event: any) {
     change = false;
     startX = event.touches[0].screenX;
+    startY = event.touches[0].screenY;
 }
 let touchmove = (event: any) => {
     //要进行节流
@@ -132,12 +135,16 @@ let touchmove = (event: any) => {
         ticking = true;
         window.requestAnimationFrame(() => {
             let currentX = event.touches[0].screenX;
-            let changed = currentX - startX;
-            if (Math.abs(changed) > 50) { //变化较大考虑换页
-                if (changed < 0 && active.value < PageInfo.max) active.value++; //往左拉
-                if (changed > 0 && active.value > PageInfo.min) active.value--; //往右拉
+            let changedX = currentX - startX;
+            let currentY = event.touches[0].screenY;
+            let changedY = currentY - startY;
+            if (Math.abs(changedY) < 40) {
+                if (Math.abs(changedX) > 50) { //变化较大考虑换页
+                    if (changedX < 0 && active.value < PageInfo.max) active.value++; //往左拉
+                    if (changedX > 0 && active.value > PageInfo.min) active.value--; //往右拉
+                }
+                ticking = false;
             }
-            ticking = false;
         })
     }
 }
