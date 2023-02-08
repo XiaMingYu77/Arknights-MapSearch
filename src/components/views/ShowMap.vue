@@ -1,6 +1,6 @@
 <template>
     <div class="content-map">
-        <Map :src="`/maps/${name}.jpg`" class="map" v-for="(name, index) in mapList" :key="name"></Map>
+        <Map :src="`/maps/${name}.jpg`" :name="name" class="map" v-for="(name, index) in mapList" :key="name" :imgStateTag="imgStateTag"></Map>
     </div>
 </template>
 
@@ -17,6 +17,6 @@
 import { toRefs, ref, onMounted } from 'vue';
 import Map from './content/Map.vue';
 
-let props = defineProps(['mapList']);
+let props = defineProps(['mapList', 'imgStateTag']);
 
 </script>

@@ -5,20 +5,19 @@
 
         <div class="scrollArea" @scroll="scroll">
             <div class="black"></div>
+            <div class="serch-place" @touchstart="touchstart" @touchmove="touchmove">
+                <div ref="topElement"></div>
 
-            <div ref="topElement"></div>
-            <div class="serch-place">
+                <van-tabs v-model:active="active" background="#0000003e" title-active-color="#fff"
+                    title-inactive-color="#9c9c9c">
+                    <van-tab title="地图">
+                        <MapSearch :searchAreaClass="searchArea" :imgStateTag="imgStateTag"></MapSearch>
+                    </van-tab>
+                    <van-tab title="食物">
+                        <FoodSearch :imgStateTag="imgStateTag"></FoodSearch>
+                    </van-tab>
+                </van-tabs>
 
-                <div :class="searchArea">
-                    <div class="search">
-                        <input type="text" v-model="searchKey" @keydown.enter="search" @input="search"/>
-                        <button class="search-btn" @click="search">搜索</button>
-                    </div>
-                </div>
-                <ShowMap v-if="showMap" :mapList="mapList" class="maplist"></ShowMap>
-                <div class="empty" v-if="!showMap">
-                    <div class="text">{{ hint }}</div>
-                </div>
             </div>
 
         </div>
@@ -26,7 +25,6 @@
 </template>
 
 <style lang="less" scoped>
-
 .content {
     height: 100vh;
     width: 100%;
@@ -49,6 +47,7 @@
         overflow-y: scroll;
         display: flex;
         flex-direction: column;
+        z-index: 1;
 
         .black {
             min-height: 200px;
@@ -59,114 +58,33 @@
             // background-color: gray;
             width: 100%;
             border-radius: 20px 20px 0 0;
-            padding: 60px 20px 0 20px; //padding-top多留40px给搜索栏让位置
             background-image: linear-gradient(to bottom right, rgba(105, 122, 161) 40%, rgba(231, 182, 193) 100%);
             position: relative; //search-area 为absolute就会跟着跑，为fixed就会驻留
-
-
-            .search-area {
-                z-index: 10;
-
-                position: absolute;
-                top: 20px;
-                left: 0;
-                right: 0;
-                padding: 0 20px;
-
-                .search {
-                    width: 100%;
-
-                    display: flex;
-                    border-radius: 20px;
-                    border: 2px solid #FFDC01;
-                    background-color: #fffced;
-                    overflow: hidden;
-                    align-items: center;
-                    font-size: 15px;
-
-                    input {
-                        outline: none;
-                        background-color: inherit;
-                        flex: 1;
-                        height: 100%;
-                        border: 0;
-                        padding: 0 20px 0 20px;
-                        width: 100px;
-                    }
-
-                    .search-btn {
-                        font-size: 18px;
-                        position: relative;
-                        padding: 6px 15px;
-                        border-radius: 20px;
-                        background-color: #FFDC01;
-                        outline: none;
-                        border: none;
-                        overflow: hidden;
-                        transition: background-color .25s;
-                    }
-
-                    .search-btn::after {
-                        content: '';
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        right: 0;
-                        bottom: 0;
-                        background-image: radial-gradient(circle, #ff7439 10%, transparent 10.1%);
-                        transform: scale(10);
-                        opacity: 0;
-                        transition: all .6s;
-                    }
-
-                    .search-btn:active::after {
-                        transform: scale(0);
-                        opacity: .5;
-                        transition: 0s;
-                    }
-
-                }
-            }
-
-            .search-area-stay {
-                .search-area();
-                position: fixed;
-            }
         }
     }
+}
 
-    .empty {
-
-        .text {
-            margin-top: 100px;
-            text-align: center;
-            white-space: pre-line;
-            line-height: 1.5;
-            color: #f5f5f5;
-            font-weight: 700;
-            font-size: 24px;
-        }
-    }
-
-
+:deep(.van-tabs__wrap) {
+    padding: 0;
+    border-radius: 20px 20px 20px 20px;
+    z-index: 10;
+    height: 45px;
 }
 </style>
 
 <script lang="ts" setup>
-import { ref, watch, nextTick } from 'vue';
-import ShowMap from './ShowMap.vue'
-import { useStore } from 'vuex'
-import { pinyin } from 'pinyin-pro';
+import { ref, watch } from 'vue';
+import MapSearch from './SearchContent/MapSearch.vue';
+import FoodSearch from './SearchContent/FoodSearch.vue';
 
-let store = useStore();
-let showMap = ref(false);
-let searchKey = ref('');
-let mapList = ref([]);
+const PageInfo = {
+    min: 0,
+    max: 1
+}
+let active = ref(PageInfo.min);
 
 //搜索框的样式
 let searchArea = ref('search-area');
-
-
 let topElement: any = ref(); //定位元素
 
 function getTop(element: any) {
@@ -182,7 +100,7 @@ let scroll = (() => {
             ticked = true;
             window.requestAnimationFrame(() => {
                 let top = getTop(topElement.value);
-                if (top > 0) {
+                if (top > -40) {
                     if (searchArea.value != 'search-area') {
                         searchArea.value = 'search-area'
                     }
@@ -197,47 +115,35 @@ let scroll = (() => {
     };
 })();
 
-
-let hint = ref('不要输入符号 \n 可以仅输入部分文字');
-
-
-//搜索
-//增加防抖操作
-const search = (() => {
-    let timer: any = null;
-
-    return function () {
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-            let list = searchMap(searchKey.value);
-            if (list.length != 0) {
-                mapList.value = list;
-                showMap.value = true;
-            } else {
-                mapList.value = [];
-                showMap.value = false;
-                hint.value = '搜索失败，看看是不是打错了\n不要输入符号\n可以仅输入部分文字';
-            }
-        }, 300);
-    }
-})();
-
-
-// 获取带拼音的数组
-const searchList = store.state.mapList.map((item: string) => {
-    // 获取数组形式不带声调的拼音 pinyin('汉语拼音', {toneType: 'none', type: 'array'}); // ["han", "yu", "pin", "yin"]
-    const tail = pinyin(item, { toneType: 'none', type: 'array' }).reduce((a, b) => a + b[0], '')
-    return item + tail
-})
-
-function searchMap(key: string) {
-    //返回一个列表
-    const ans: any = [];
-    searchList.forEach((value: string, index: number) => {
-        if (key != '' && value.indexOf(key) != -1) {
-            ans.push(store.state.mapList[index]);
-        }
-    });
-    return ans;
+//由于transform导致fixed失效，需要手动进行页面切换（vant的滑动要用transform）
+let change = false;
+let startX = 0;
+function touchstart(event: any) {
+    change = false;
+    startX = event.touches[0].screenX;
 }
+let touchmove = (event: any) => {
+    //要进行节流
+    let ticking = false;
+    if (!ticking) {
+        ticking = true;
+        window.requestAnimationFrame(() => {
+            let currentX = event.touches[0].screenX;
+            let changed = currentX - startX;
+            if (Math.abs(changed) > 80) { //变化较大考虑换页
+                if (changed < 0 && active.value < PageInfo.max) active.value++; //往左拉
+                if (changed > 0 && active.value > PageInfo.min) active.value--; //往右拉
+            }
+            ticking = false;
+        })
+    }
+}
+
+let imgStateTag = ref(false); //子组件监听这个值改变就知道换页了
+function closePic() { //切换标签页后应当将原来标签页的给放大图片给关闭
+    imgStateTag.value = !imgStateTag.value;
+}
+watch(active, () => {
+    setTimeout(closePic, 10);
+})
 </script>

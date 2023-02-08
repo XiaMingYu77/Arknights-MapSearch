@@ -3,7 +3,7 @@
         <div class="title">生息演算地图查询</div>
         <button class="start-btn" @click="startSearch">开始查询</button>
     </div>
-    <div class="authorMsg">by：屿洺、KK</div>
+    <div class="authorMsg">by：屿洺、KK、Maple</div>
 </template>
 
 
