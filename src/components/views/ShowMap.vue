@@ -1,12 +1,13 @@
 <template>
     <div class="content-map">
-        <Map :src="`/maps/${name}.jpg`" :name="name" class="map" v-for="(name, index) in mapList" :key="name" :imgStateTag="imgStateTag"></Map>
+        <Map :src="`/maps/${name}.jpg`" :name="name" class="map" v-for="(name, index) in mapList" :key="name"
+            :imgStateTag="imgStateTag"></Map>
     </div>
 </template>
 
 <style scoped lang="less">
 .content-map {
-    
+
     .map {
         width: 100%;
     }
